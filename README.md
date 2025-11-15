@@ -18,6 +18,34 @@ Audio Player is a C program made to play audio files with SDL2 Library
 
 ---
 
+## How to build:
+
+### Build
+
+Run `make clean build` to only build the file in the current directory you will have a binary for the program
+
+```bash
+$ make clean build
+```
+
+### Install
+
+Run `sudo make clean install` to build and move the binary to the `/usr/local/bin/` directory to make it run everywhere
+
+```bash
+$ sudo make clean install
+```
+
+### Uninstall
+
+Run `sudo make uninstall` to uninstall the program
+
+```bash
+sudo make uninstall
+```
+
+---
+
 ## Features:
 
 - Works from terminal directly
