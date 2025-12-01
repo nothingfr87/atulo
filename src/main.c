@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   while ((opt = getopt(argc, argv, "vh")) != -1) {
     switch (opt) {
     case 'v':
-      printf("Version 1.0.2 Alpha\n");
+      printf("Version 1.0.4 Alpha\n");
       return EXIT_SUCCESS;
     case 'h':
       printf("Usage: \n");
@@ -52,12 +52,13 @@ int main(int argc, char *argv[]) {
   // Checking if the file is wav or not (Will be removed later)
   if (strcmp(format, ".wav") != 0) {
     fprintf(stderr, "File have to be WAV format\n");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   // Error Handle
   if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) {
     printf("SDL_ERROR: %s, try again\n", SDL_GetError());
+    return EXIT_FAILURE;
   }
 
   // initializing an audio specification
@@ -68,12 +69,14 @@ int main(int argc, char *argv[]) {
   // Error Handle
   if (SDL_LoadWAV(filename, &wav_spec, &wav_buffer, &wav_length) == NULL) {
     printf("SDL_ERROR: %s, try again\n", SDL_GetError());
+    return EXIT_FAILURE;
   }
 
   // Error Handle
   SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wav_spec, NULL, 0);
   if (deviceId == 0) {
     printf("SDL_ERROR: %s, try again\n", SDL_GetError());
+    return EXIT_FAILURE;
   }
 
   SDL_QueueAudio(deviceId, wav_buffer, wav_length);
