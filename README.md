@@ -8,7 +8,6 @@ Audio Player is a C program made to play audio files with SDL2 Library
 
 - GCC 
 - SDL2
-- CMAKE
 
 --- 
 
