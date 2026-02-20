@@ -2,8 +2,6 @@
 
 Audio Player is a C program made to play audio files with SDL2 Library
 
-(The Code for this project is being rewrited to improve its functionality and add support to all audio formats)
-
 ---
 
 ## Requirements:
@@ -52,7 +50,6 @@ sudo make uninstall
 ## Features:
 
 - Works from terminal directly
-- Supports only `wav` for now
 - lightweight
 
 ---
