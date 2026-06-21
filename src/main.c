@@ -1,22 +1,18 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_error.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_stdinc.h>
-#include <SDL2/SDL_timer.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <sndfile.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  // Variables
-  int running = 1;
-  SDL_Event key;
-
-  // Flags
+  // FLags
   int opt;
+  if (optind >= argc) {
+    fprintf(stderr, "Usage: %s [-h] [-v] <audio.wav>\n", argv[0]);
+    return EXIT_FAILURE;
+  }
   while ((opt = getopt(argc, argv, "vh")) != -1) {
     switch (opt) {
     case 'v':
@@ -33,71 +29,88 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  SDL_Window *window = SDL_CreateWindow("Atulo", SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED, 200, 100, 0);
+  // Initiliazing Audio Device & Context
+  ALCdevice *device = alcOpenDevice(NULL);
+  if (!device) {
+    fprintf(stderr,
+            "Failed to open your default audio device, please try again\n");
+    return 1;
+  }
 
-  if (!window) {
-    printf("SDL_ERROR: %s\n", SDL_GetError());
+  ALCcontext *context = alcCreateContext(device, NULL);
+  if (!context) {
+    fprintf(
+        stderr,
+        "Failed to create a context for your audio device, please try again\n");
+    alcCloseDevice(device);
+    return 1;
+  }
+
+  alcMakeContextCurrent(context);
+
+  // Loading Audio File
+  const char *filename = argv[optind];
+  SF_INFO sfinfo;
+  SNDFILE *sndfile = sf_open(filename, SFM_READ, &sfinfo);
+  if (!sndfile) {
+    fprintf(stderr, "Failed: Could not open file, maybe file doesn't exist\n");
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(context);
+    alcCloseDevice(device);
+    return 1;
+  }
+
+  ALsizei num = (ALsizei)(sfinfo.frames * sfinfo.channels);
+  ALsizei sizeData = num * sizeof(short);
+  short *bufferData = malloc(sizeData);
+
+  ALenum format;
+
+  if (sfinfo.channels == 1) {
+    format = AL_FORMAT_MONO16;
+  } else if (sfinfo.channels == 2) {
+    format = AL_FORMAT_STEREO16;
+  } else {
+    fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
+    sf_close(sndfile);
     return EXIT_FAILURE;
   }
 
-  if (optind >= argc) {
-    fprintf(stderr, "no input file provided\n");
-    return EXIT_FAILURE;
+  sf_read_short(sndfile, bufferData, num);
+  sf_close(sndfile);
+
+  // Generating Buffers
+  alGetError();
+  ALuint buffer;
+  alGenBuffers(1, &buffer);
+  alGetError();
+
+  // Reading Buffer Data
+  alBufferData(buffer, format, bufferData, sizeData, sfinfo.samplerate);
+  free(bufferData);
+
+  // Generating Sources and Playing Audioe
+  ALuint source;
+  alGenSources(1, &source);
+  alSourcei(source, AL_BUFFER, buffer);
+
+  alSourcePlay(source);
+
+  ALint source_state;
+  alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+  while (source_state == AL_PLAYING) {
+    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+    sleep(1);
   }
 
-  char *filename = argv[optind];
-  char *format = strrchr(filename, '.');
+  alDeleteSources(1, &source);
+  alDeleteBuffers(1, &buffer);
 
-  // Checking if the file is wav or not (Will be removed later)
-  if (strcmp(format, ".wav") != 0) {
-    fprintf(stderr, "File have to be WAV format\n");
-    return EXIT_FAILURE;
-  }
+  alcMakeContextCurrent(NULL);
+  alcDestroyContext(context);
+  alcCloseDevice(device);
 
-  // Error Handle
-  if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) {
-    printf("SDL_ERROR: %s, try again\n", SDL_GetError());
-    return EXIT_FAILURE;
-  }
-
-  // initializing an audio specification
-  SDL_AudioSpec wav_spec;
-  Uint8 *wav_buffer;
-  Uint32 wav_length;
-
-  // Error Handle
-  if (SDL_LoadWAV(filename, &wav_spec, &wav_buffer, &wav_length) == NULL) {
-    printf("SDL_ERROR: %s, try again\n", SDL_GetError());
-    return EXIT_FAILURE;
-  }
-
-  // Error Handle
-  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wav_spec, NULL, 0);
-  if (deviceId == 0) {
-    printf("SDL_ERROR: %s, try again\n", SDL_GetError());
-    return EXIT_FAILURE;
-  }
-
-  SDL_QueueAudio(deviceId, wav_buffer, wav_length);
-
-  SDL_PauseAudioDevice(deviceId, 0);
-  printf("Press Enter to exit...\n");
-  while (running) {
-    while (SDL_PollEvent(&key)) {
-      if (key.type == SDL_KEYDOWN) {
-        if (key.key.keysym.sym == SDLK_RETURN) {
-          printf("Quiting... \n");
-          running = 0;
-        }
-      }
-    }
-    SDL_Delay(10);
-  }
-
-  SDL_CloseAudioDevice(deviceId);
-  SDL_FreeWAV(wav_buffer);
-  SDL_Quit();
+  printf("Done Playing the Audio File\n");
 
   return EXIT_SUCCESS;
 }

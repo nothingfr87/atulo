@@ -1,6 +1,2 @@
-# Build Directory
-build/
-
-
-# VSCode Files
-.vscode/
+# planning files 
+src/*.md

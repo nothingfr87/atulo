@@ -7,12 +7,33 @@ Audio Player is a C program made to play audio files with SDL2 Library
 ## Requirements:
 
 - GCC 
-- SDL2
+- OpenAL
+- Libsndfile
+
+#### Debian/Ubuntu Distros
+
+```bash
+sudo apt update
+sudo apt install libopenal-dev libsndfile1-dev build-essentials
+```
+
+#### Fedora Distros
+
+```bash
+sudo dnf groupinstall "Development Tools"
+sudo dnf install openal-soft-devel libsndfile-devel
+```
+
+#### Arch Distros
+
+```bash
+sudo pacman -S base-devel openal libsndfile
+
+```
 
 --- 
 
 ## Supported OS:
-- Windows (Not Tested)
 - Linux
 - MacOS (Not Tested)
 
@@ -50,12 +71,13 @@ sudo make uninstall
 
 - Works from terminal directly
 - lightweight
+- Supports all formats
 
 ---
 
 ## Issues
 
-if you find any issues you can report at [Issues](https://github.com/nothingfr87/audio-player)
+if you find any issues you can report at [Issues](https://github.com/nothingfr87/Atulo/issues)
 
 ---
 
