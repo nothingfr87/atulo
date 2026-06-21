@@ -6,9 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#define NUM_BUFFERS 4
-#define BUFFER_SAMPLES 4096
-
 int main(int argc, char *argv[]) {
   // FLags
   int opt;
