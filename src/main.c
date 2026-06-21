@@ -6,13 +6,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#define NUM_BUFFERS 4
+#define BUFFER_SAMPLES 4096
+
 int main(int argc, char *argv[]) {
   // FLags
   int opt;
-  if (optind >= argc) {
-    fprintf(stderr, "Usage: %s [-h] [-v] <audio.wav>\n", argv[0]);
-    return EXIT_FAILURE;
-  }
   while ((opt = getopt(argc, argv, "vh")) != -1) {
     switch (opt) {
     case 'v':
@@ -27,6 +26,11 @@ int main(int argc, char *argv[]) {
       fprintf(stderr, "Invalid Option\n Usage: %s [-h] [-v]\n", argv[0]);
       return EXIT_FAILURE;
     }
+  }
+
+  if (optind >= argc) {
+    fprintf(stderr, "Usage: %s [-h] [-v] <audio.wav>\n", argv[0]);
+    return EXIT_FAILURE;
   }
 
   // Initiliazing Audio Device & Context
