@@ -1,4 +1,4 @@
-GCC_ARGUMENTS = -Wall -O2 $(shell pkg-config --cflags --libs openal sndfile) -o 
+GCC_ARGUMENTS = -Wall -O2 $(shell pkg-config --cflags --libs openal sndfile ncurses) -o 
 CC = gcc
 BIN = atulo
 

@@ -1,5 +1,6 @@
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <ncurses.h>
 #include <sndfile.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +8,17 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
+  // Initiliazing NCURSES
+  initscr();
+  noecho();
+  curs_set(0);
+  keypad(stdscr, TRUE);
+
+  int ch;
+
+  printw("Playing audio...\n");
+  refresh();
+
   // FLags
   int opt;
   while ((opt = getopt(argc, argv, "vh")) != -1) {
@@ -26,7 +38,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (optind >= argc) {
-    fprintf(stderr, "Usage: %s [-h] [-v] <audio.wav>\n", argv[0]);
+    fprintf(stderr, "Usage: %s [-h] [-v] <audio>\n", argv[0]);
     return EXIT_FAILURE;
   }
 
@@ -40,9 +52,8 @@ int main(int argc, char *argv[]) {
 
   ALCcontext *context = alcCreateContext(device, NULL);
   if (!context) {
-    fprintf(
-        stderr,
-        "Failed to create a context for your audio device, please try again\n");
+    fprintf(stderr, "Failed to create a context for your audio device, "
+                    "please try again\n");
     alcCloseDevice(device);
     return 1;
   }
@@ -84,7 +95,12 @@ int main(int argc, char *argv[]) {
   alGetError();
   ALuint buffer;
   alGenBuffers(1, &buffer);
-  alGetError();
+  ALenum error = alGetError();
+  if (error != AL_NO_ERROR) {
+    endwin();
+    fprintf(stderr, "alGenBuffers failed: %d\n", error);
+    return EXIT_FAILURE;
+  }
 
   // Reading Buffer Data
   alBufferData(buffer, format, bufferData, sizeData, sfinfo.samplerate);
@@ -98,12 +114,25 @@ int main(int argc, char *argv[]) {
   alSourcePlay(source);
 
   ALint source_state;
-  alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-  while (source_state == AL_PLAYING) {
-    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-    sleep(1);
-  }
 
+  while (1) {
+    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+
+    if (source_state != AL_PLAYING) {
+      break;
+    }
+
+    ch = getch();
+
+    if (ch == 'q' || ch == 27) {
+      alSourceStop(source);
+      clear();
+      printw("Stopped.\n");
+      refresh();
+      napms(1000);
+      break;
+    }
+  }
   alDeleteSources(1, &source);
   alDeleteBuffers(1, &buffer);
 
@@ -112,6 +141,8 @@ int main(int argc, char *argv[]) {
   alcCloseDevice(device);
 
   printf("Done Playing the Audio File\n");
+  refresh();
 
+  endwin();
   return EXIT_SUCCESS;
 }
