@@ -1,6 +1,6 @@
 # Audio Player
 
-Audio Player is a C program made to play audio files with SDL2 Library
+Audio Player is a C program made to play audio files with OpenAL Library
 
 ---
 
@@ -9,25 +9,26 @@ Audio Player is a C program made to play audio files with SDL2 Library
 - GCC 
 - OpenAL
 - Libsndfile
+- Ncurses
 
 #### Debian/Ubuntu Distros
 
 ```bash
 sudo apt update
-sudo apt install libopenal-dev libsndfile1-dev build-essentials
+sudo apt install libopenal-dev libsndfile1-dev build-essentials  libncurses5-dev libncursesw5-dev
 ```
 
 #### Fedora Distros
 
 ```bash
 sudo dnf groupinstall "Development Tools"
-sudo dnf install openal-soft-devel libsndfile-devel
+sudo dnf install openal-soft-devel libsndfile-devel ncurses-devel
 ```
 
 #### Arch Distros
 
 ```bash
-sudo pacman -S base-devel openal libsndfile
+sudo pacman -S base-devel openal libsndfile ncurses
 
 ```
 
@@ -72,6 +73,14 @@ sudo make uninstall
 - Works from terminal directly
 - lightweight
 - Supports all formats
+- Keybindings:
+    - p/Space: Pause
+    - q/Escape: Exit
+    - r: replay from start
+    - Right Arrow: Skip 5 seconds
+    - Left Arrow: Go back 5 seconds
+
+More Coming...
 
 ---
 
@@ -86,7 +95,6 @@ if you find any issues you can report at [Issues](https://github.com/nothingfr87
 Contributions are welcome whether they are adding new features or improving code just make your edit and make a pull request
 
 Please make sure your pull request is well documented
-
 
 --- 
 

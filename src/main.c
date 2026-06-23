@@ -7,11 +7,20 @@
 #include <string.h>
 #include <unistd.h>
 
+void formatTime(float seconds, char *buffer, size_t size) {
+  int hours = (int)seconds / 3600;
+  int minutes = ((int)seconds % 3600) / 60;
+  int secs = (int)seconds % 60;
+  snprintf(buffer, size, "%02d:%02d:%02d", hours, minutes, secs);
+}
+
 int main(int argc, char *argv[]) {
   // Initiliazing NCURSES
   initscr();
   noecho();
+  cbreak();
   curs_set(0);
+  nodelay(stdscr, TRUE);
   keypad(stdscr, TRUE);
 
   int ch;
@@ -72,7 +81,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  ALsizei num = (ALsizei)(sfinfo.frames * sfinfo.channels);
+  ALsizei num = ((ALsizei)(sfinfo.frames * sfinfo.channels));
   ALsizei sizeData = num * sizeof(short);
   short *bufferData = malloc(sizeData);
 
@@ -115,24 +124,59 @@ int main(int argc, char *argv[]) {
 
   ALint source_state;
 
-  while (1) {
-    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+  ALfloat currentTime;
+  ALfloat skipTime = 5;
 
-    if (source_state != AL_PLAYING) {
-      break;
-    }
+  while (1) {
+    // Ncurses & Keybindings Loop
+    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+    alGetSourcef(source, AL_SEC_OFFSET, &currentTime);
+    static int isPaused = 0;
 
     ch = getch();
 
-    if (ch == 'q' || ch == 27) {
+    char time[256];
+    formatTime(currentTime, time, sizeof(time));
+
+    printw("\rPosition: %s", time);
+
+    if ('q' == ch || 27 == ch) {
       alSourceStop(source);
       clear();
-      printw("Stopped.\n");
+      printw("OK, Stopping.\n");
       refresh();
       napms(1000);
       break;
     }
+    if ('p' == ch || ' ' == ch) {
+      if (!isPaused) {
+        alSourcePause(source);
+        isPaused = 1;
+        clear();
+        printw("Paused. Press 'p' or Space to resume.\n");
+        refresh();
+      } else {
+        alSourcePlay(source);
+        isPaused = 0;
+        clear();
+        printw("Playing...\n");
+        refresh();
+      }
+    }
+    if (KEY_RIGHT == ch) {
+      alSourcef(source, AL_SEC_OFFSET, currentTime + skipTime);
+    }
+    if (KEY_LEFT == ch) {
+      alSourcef(source, AL_SEC_OFFSET, currentTime - skipTime);
+    }
+    if ('r' == ch) {
+      alSourcef(source, AL_SEC_OFFSET, 0.0f);
+    }
+    usleep(10000);
+    refresh();
   }
+  usleep(10000);
+
   alDeleteSources(1, &source);
   alDeleteBuffers(1, &buffer);
 
