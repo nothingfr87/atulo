@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   while ((opt = getopt(argc, argv, "vh")) != -1) {
     switch (opt) {
     case 'v':
-      printf("Version 1.0.5\n");
+      printf("Version 1.0.6\n");
       return EXIT_SUCCESS;
     case 'h':
       printf("Usage: \n");
