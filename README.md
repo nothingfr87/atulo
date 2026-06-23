@@ -7,6 +7,10 @@ Audio Player is a C program made to play audio files with OpenAL Library
 > [!NOTE]
 > After testing `atulo` a bit, it turns out that loading all of the audio data into one buffer to the memory creates a huge memory usage for every second the audio file increases, so if the audio file is 20 minutes it would take approximately 200MB-300MB
 
+> [!WARNING]
+> Due to my weak experience, I am going to stop developing on Atulo for sometime till I find a solution for the memory usage problem
+> Contributions are still open!
+
 ---
 
 ## Requirements:
