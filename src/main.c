@@ -1,192 +1,49 @@
-#include <AL/al.h>
-#include <AL/alc.h>
+#include "keys.h"
+#include "miniaudio.h"
+#include <inttypes.h>
 #include <ncurses.h>
-#include <sndfile.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
-void formatTime(float seconds, char *buffer, size_t size) {
-  int hours = (int)seconds / 3600;
-  int minutes = ((int)seconds % 3600) / 60;
-  int secs = (int)seconds % 60;
-  snprintf(buffer, size, "%02d:%02d:%02d", hours, minutes, secs);
-}
-
 int main(int argc, char *argv[]) {
-  // Initiliazing NCURSES
-  initscr();
-  noecho();
-  cbreak();
-  curs_set(0);
-  nodelay(stdscr, TRUE);
-  keypad(stdscr, TRUE);
-
-  int ch;
-
-  printw("Playing audio...\n");
-  refresh();
-
-  // FLags
-  int opt;
-  while ((opt = getopt(argc, argv, "vh")) != -1) {
-    switch (opt) {
-    case 'v':
-      printf("Version 1.0.6\n");
-      return EXIT_SUCCESS;
-    case 'h':
-      printf("Usage: \n");
-      printf("[-v] Shows current version\n");
-      printf("[-h] Displays help menu and exits\n");
-      return EXIT_SUCCESS;
-    default:
-      fprintf(stderr, "Invalid Option\n Usage: %s [-h] [-v]\n", argv[0]);
-      return EXIT_FAILURE;
-    }
-  }
-
-  if (optind >= argc) {
-    fprintf(stderr, "Usage: %s [-h] [-v] <audio>\n", argv[0]);
-    return EXIT_FAILURE;
-  }
-
-  // Initiliazing Audio Device & Context
-  ALCdevice *device = alcOpenDevice(NULL);
-  if (!device) {
-    fprintf(stderr,
-            "Failed to open your default audio device, please try again\n");
+  if (argc <= 1) {
+    fprintf(stderr, "Usage: %s <audio-file>\n", argv[0]);
     return 1;
   }
 
-  ALCcontext *context = alcCreateContext(device, NULL);
-  if (!context) {
-    fprintf(stderr, "Failed to create a context for your audio device, "
-                    "please try again\n");
-    alcCloseDevice(device);
+  ma_engine engine;
+  ma_result result;
+  ma_sound sound;
+  ma_decoder decoder;
+
+  result = ma_engine_init(NULL, &engine);
+  if (result != MA_SUCCESS) {
+    perror("Failed to initialize engine\n");
     return 1;
   }
 
-  alcMakeContextCurrent(context);
+  ma_uint32 sample_rate = ma_engine_get_sample_rate(&engine);
 
-  // Loading Audio File
-  const char *filename = argv[optind];
-  SF_INFO sfinfo;
-  SNDFILE *sndfile = sf_open(filename, SFM_READ, &sfinfo);
-  if (!sndfile) {
-    fprintf(stderr, "Failed: Could not open file, maybe file doesn't exist\n");
-    alcMakeContextCurrent(NULL);
-    alcDestroyContext(context);
-    alcCloseDevice(device);
-    return 1;
-  }
-
-  ALsizei num = ((ALsizei)(sfinfo.frames * sfinfo.channels));
-  ALsizei sizeData = num * sizeof(short);
-  short *bufferData = malloc(sizeData);
-
-  ALenum format;
-
-  if (sfinfo.channels == 1) {
-    format = AL_FORMAT_MONO16;
-  } else if (sfinfo.channels == 2) {
-    format = AL_FORMAT_STEREO16;
-  } else {
-    fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
-    sf_close(sndfile);
-    return EXIT_FAILURE;
-  }
-
-  sf_read_short(sndfile, bufferData, num);
-  sf_close(sndfile);
-
-  // Generating Buffers
-  alGetError();
-  ALuint buffer;
-  alGenBuffers(1, &buffer);
-  ALenum error = alGetError();
-  if (error != AL_NO_ERROR) {
+  if (sample_rate == 0) {
     endwin();
-    fprintf(stderr, "alGenBuffers failed: %d\n", error);
-    return EXIT_FAILURE;
+    fprintf(stderr, "Could not get audio sample rate.\n");
+    ma_engine_uninit(&engine);
+    return 1;
   }
 
-  // Reading Buffer Data
-  alBufferData(buffer, format, bufferData, sizeData, sfinfo.samplerate);
-  free(bufferData);
-
-  // Generating Sources and Playing Audioe
-  ALuint source;
-  alGenSources(1, &source);
-  alSourcei(source, AL_BUFFER, buffer);
-
-  alSourcePlay(source);
-
-  ALint source_state;
-
-  ALfloat currentTime;
-  ALfloat skipTime = 5;
-
-  while (1) {
-    // Ncurses & Keybindings Loop
-    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-    alGetSourcef(source, AL_SEC_OFFSET, &currentTime);
-    static int isPaused = 0;
-
-    ch = getch();
-
-    char time[256];
-    formatTime(currentTime, time, sizeof(time));
-
-    printw("\rPosition: %s", time);
-
-    if ('q' == ch || 27 == ch) {
-      alSourceStop(source);
-      clear();
-      printw("OK, Stopping.\n");
-      refresh();
-      napms(1000);
-      break;
-    }
-    if ('p' == ch || ' ' == ch) {
-      if (!isPaused) {
-        alSourcePause(source);
-        isPaused = 1;
-        clear();
-        printw("Paused. Press 'p' or Space to resume.\n");
-        refresh();
-      } else {
-        alSourcePlay(source);
-        isPaused = 0;
-        clear();
-        printw("Playing...\n");
-        refresh();
-      }
-    }
-    if (KEY_RIGHT == ch) {
-      alSourcef(source, AL_SEC_OFFSET, currentTime + skipTime);
-    }
-    if (KEY_LEFT == ch) {
-      alSourcef(source, AL_SEC_OFFSET, currentTime - skipTime);
-    }
-    if ('r' == ch) {
-      alSourcef(source, AL_SEC_OFFSET, 0.0f);
-    }
-    usleep(10000);
-    refresh();
+  result = ma_sound_init_from_file(&engine, argv[1], MA_SOUND_FLAG_STREAM, NULL,
+                                   NULL, &sound);
+  if (result != MA_SUCCESS) {
+    perror("Failed to initialize sound file\n");
+    ma_engine_uninit(&engine);
+    return 1;
   }
-  usleep(10000);
 
-  alDeleteSources(1, &source);
-  alDeleteBuffers(1, &buffer);
+  userKeys(argv[1], &engine, &sound, sample_rate);
 
-  alcMakeContextCurrent(NULL);
-  alcDestroyContext(context);
-  alcCloseDevice(device);
+  ma_sound_stop(&sound);
+  ma_sound_uninit(&sound);
+  ma_engine_uninit(&engine);
 
-  printf("Done Playing the Audio File\n");
-  refresh();
-
-  endwin();
-  return EXIT_SUCCESS;
+  return 0;
 }

@@ -1,20 +1,16 @@
-GCC_ARGUMENTS = -Wall -O2 $(shell pkg-config --cflags --libs openal sndfile ncursesw) -o 
-CC = gcc
+CFLAGS = $(shell pkg-config --cflags --libs ncursesw) -lpthread -lm -ldl
+FILES = src/main.c src/keys.c src/miniaudio.c
 BIN = atulo
-
-install_dir = "/usr/local/bin/"
+install_dir = /usr/local/bin/
 
 all: clean build
 
+install: clean build
+	chmod 777 $(BIN)
+	mv $(BIN) $(install_dir)
+
 build:
-	gcc src/main.c $(GCC_ARGUMENTS) $(BIN) 
-
-install: build
-	mv $(BIN) $(install_dir) 
-	chmod 777 $(install_dir)$(BIN)
-
-uninstall:
-	rm -f $(install_dir)$(BIN)
+	cc $(FILES) -o $(BIN) $(CFLAGS)
 
 clean:
-	rm -f $(BIN) 
+	rm -rf $(BIN) 2>/dev/null
