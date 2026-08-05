@@ -1,12 +1,14 @@
 #include "keys.h"
 #include "miniaudio.h"
 #include <inttypes.h>
+#include <locale.h>
 #include <ncurses.h>
 #include <unistd.h>
 
 void userKeys(const char *filename, ma_engine *engine, ma_sound *sound,
               ma_uint32 sample_rate) {
 
+  setlocale(LC_ALL, "");
   initscr();
   noecho();
   cbreak();
