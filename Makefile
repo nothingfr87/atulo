@@ -1,16 +1,24 @@
-CFLAGS = $(shell pkg-config --cflags --libs ncursesw) -lpthread -lm -ldl
-FILES = src/main.c src/keys.c src/miniaudio.c
+CFLAGS  = $(shell pkg-config --cflags ncursesw)
+LDFLAGS = $(shell pkg-config --libs ncursesw) -lpthread -lm -ldl
+SRC = src/*.c
+CC = gcc
 BIN = atulo
-install_dir = /usr/local/bin/
+install_dir = /usr/local/bin
+
+.PHONY: all build install uninstall clean
 
 all: clean build
 
-install: clean build
-	chmod 777 $(BIN)
-	mv $(BIN) $(install_dir)
-
 build:
-	cc $(FILES) -o $(BIN) $(CFLAGS)
+	$(CC) $(CFLAGS) $(SRC) -o $(BIN) $(LDFLAGS)
+
+install: clean build
+	sudo mkdir -p $(install_dir)
+	sudo cp $(BIN) $(install_dir)/
+	sudo chmod 755 $(install_dir)/$(BIN)
+
+uninstall:
+	sudo rm -f $(install_dir)/$(BIN)
 
 clean:
-	rm -rf $(BIN) 2>/dev/null
+	rm -f $(BIN)

@@ -6,10 +6,9 @@
 
 ## UI
 
-- [ ] playlist system
-- [ ] pause/play button
+- [ ] audio visualizer 
 - [ ] timeline
-- [ ] fix for Arabic filenames
+- [x] fix for Arabic filenames
 
 ---
 
