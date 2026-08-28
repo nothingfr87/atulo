@@ -1,6 +1,7 @@
 #include "includes/keys.h"
 #include "includes/atulo.h"
 #include "includes/miniaudio.h"
+#include "includes/timeline.h"
 #include "includes/util.h"
 #include <inttypes.h>
 #include <locale.h>
@@ -20,22 +21,19 @@ void user_keys(const char *filename, ma_engine *engine, ma_sound *sound,
   int ch;
 
   ma_sound_start(sound);
-  printw("\rPlaying -> [%s] ....\n", filename);
 
   while (ma_sound_at_end(sound) == 0) {
-    ma_uint64 cursorFrames;
     ch = getch();
 
-    ma_sound_get_cursor_in_pcm_frames(sound, &cursorFrames);
+    draw_timeline(sound, sample_rate);
 
-    ma_uint64 totalSeconds = cursorFrames / sample_rate;
-    ma_uint64 minutes = totalSeconds / 60;
-    ma_uint64 seconds = totalSeconds % 60;
+    mvprintw(1, 2, "Atulo Player —  %s", filename);
+    mvprintw(2, 2, "Status: %s", isPaused ? "[PAUSED]" : "[PLAYING]");
+    mvprintw(LINES - 5, 2,
+             "Controls: [Space] Pause/Play | [<- / ->] Seek 5s | [r] Replay | "
+             "[q] Quit");
 
-    printw("\rPosition: %02" PRIu64 ":%02" PRIu64, (unsigned long)minutes,
-           (unsigned long)seconds);
     refresh();
-    napms(100);
 
     if ('q' == ch || 27 == ch) {
       quit_atulo();

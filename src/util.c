@@ -1,19 +1,14 @@
 #include "includes/util.h"
 #include "includes/miniaudio.h"
-#include <ncurses.h>
 #include <stdlib.h>
 
 void pause_audio(const char *filename, ma_sound *sound, int *isPaused) {
   if (!*isPaused) {
     ma_sound_stop(sound);
     *isPaused = 1;
-    clear();
-    printw("Paused. Press 'p' or Space to resume.\n");
   } else {
     ma_sound_start(sound);
     *isPaused = 0;
-    clear();
-    printw("Playing -> [%s]\n", filename);
   }
 }
 

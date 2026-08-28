@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 ma_engine engine;
 ma_result result;
@@ -12,9 +13,26 @@ ma_uint32 sample_rate;
 int isPaused;
 
 void init_atulo(int argc, char *argv[]) {
-  if (argc <= 1) {
-    fprintf(stderr, "Usage: %s <audio-file>\n", argv[0]);
-    exit(1);
+  int opt;
+  while ((opt = getopt(argc, argv, "hv?")) != -1) {
+    switch (opt) {
+    case 'h':
+    case '?':
+      printf("Usage: %s [options] <audio-file>\n", argv[0]);
+      printf("Flags:\n");
+      printf("  [-h] [-?]    Show this help message\n");
+      printf("  [-v]         Show version information\n");
+      exit(0);
+    case 'v':
+      printf("Atulo —  A lightweight audio player\nVersion v1.0.8\n");
+      exit(0);
+    }
+  }
+
+  if (optind >= argc) {
+    fprintf(stderr, "Error: no audio file specified.\n");
+    fprintf(stderr, "Usage: %s [options] <audio-file>\n", argv[0]);
+    exit(EXIT_FAILURE);
   }
 
   result = ma_engine_init(NULL, &engine);
@@ -31,8 +49,8 @@ void init_atulo(int argc, char *argv[]) {
     exit(1);
   }
 
-  result = ma_sound_init_from_file(&engine, argv[1], MA_SOUND_FLAG_STREAM, NULL,
-                                   NULL, &sound);
+  result = ma_sound_init_from_file(&engine, argv[optind], MA_SOUND_FLAG_STREAM,
+                                   NULL, NULL, &sound);
   if (result != MA_SUCCESS) {
     perror("Failed to initialize sound file\n");
     ma_engine_uninit(&engine);

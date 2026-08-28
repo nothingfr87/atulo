@@ -1,6 +1,5 @@
 #include "includes/atulo.h"
 #include "includes/keys.h"
-#include "includes/util.h"
 
 int main(int argc, char *argv[]) {
   init_atulo(argc, argv);

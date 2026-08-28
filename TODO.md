@@ -4,10 +4,10 @@
 
 ---
 
-## UI
+## TUI
 
 - [ ] audio visualizer 
-- [ ] timeline
+- [x] timeline
 - [x] fix for Arabic filenames
 
 ---
@@ -15,4 +15,3 @@
 ## Backend
 
 - [ ] decoder (to support ALL audio formats)
-- [ ] enhance performance
