@@ -1,4 +1,4 @@
-#include "includes/keys.h"
+#include "includes/ui.h"
 #include "includes/atulo.h"
 #include "includes/miniaudio.h"
 #include "includes/timeline.h"
@@ -8,18 +8,25 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-void user_keys(const char *filename, ma_engine *engine, ma_sound *sound,
-               ma_uint32 sample_rate) {
-
+void init_ui() {
   setlocale(LC_ALL, "");
   initscr();
   noecho();
   cbreak();
+  start_color();
+  use_default_colors();
   curs_set(0);
   timeout(100);
   keypad(stdscr, TRUE);
-  int ch;
 
+  init_pair(ACCENT_COLOR, COLOR_MAGENTA, -1);
+  init_pair(MUTED_COLOR, COLOR_BLACK, -1);
+}
+
+void draw_ui(const char *filename, ma_engine *engine, ma_sound *sound,
+             ma_uint32 sample_rate) {
+
+  int ch;
   ma_sound_start(sound);
 
   while (ma_sound_at_end(sound) == 0) {
@@ -28,10 +35,12 @@ void user_keys(const char *filename, ma_engine *engine, ma_sound *sound,
     draw_timeline(sound, sample_rate);
 
     mvprintw(1, 2, "Atulo Player —  %s", filename);
-    mvprintw(2, 2, "Status: %s", isPaused ? "[PAUSED]" : "[PLAYING]");
+    mvprintw(2, 2, "Status: %s", isPaused ? "[PAUSED] " : "[PLAYING]");
+    attron(COLOR_PAIR(MUTED_COLOR));
     mvprintw(LINES - 5, 2,
              "Controls: [Space] Pause/Play | [<- / ->] Seek 5s | [r] Replay | "
              "[q] Quit");
+    attroff(COLOR_PAIR(MUTED_COLOR));
 
     refresh();
 
