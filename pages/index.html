@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atulo — A Lightweight, blazingly fast audio player</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Iosevka+Charon:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">ATULO</div>
+      <div class="navbar">
+        <ul class="links">
+          <li><a href="#build">[ BUILD ]</a></li>
+          <li><a href="https://github.com/nothingfr87/atulo">[ GITHUB ]</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <div class="hero">
+        <h1 class="title">ATULO</h1>
+        <h2 class="subtitle">AUDIO PLAYER WRITTEN IN C</h2>
+        <p class="desc">A small terminal program made to play audio files.</p>
+        <a href="https://github.com/nothingfr87/atulo">[ SOURCE CODE ]</a>
+      </div>
+      <hr />
+      <div class="formats">
+        <p class="title">01 / FORMATS</p>
+        <div class="grid-container">
+          <div class="card">
+            <p>MP3</p>
+          </div>
+          <div class="card">
+            <p>WAV</p>
+          </div>
+          <div class="card">
+            <p>OGG</p>
+          </div>
+          <div class="card">
+            <p>OPUS</p>
+          </div>
+          <div class="card">
+            <p>FLAC</p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="interface">
+        <p class="title">02 / INTERFACE</p>
+        <p class="content">
+          Atulo works directly from the terminal. Its interface is built with
+          ncurses and its audio support comes from the embedded miniaudio.h
+          library.
+        </p>
+        <img src="interface.png" alt="Preview" class="preview" />
+      </div>
+      <hr />
+      <div class="controls">
+        <p class="title">03 / CONTROLS</p>
+        <div class="grid-container">
+          <div class="control">
+            <kbd>p / Space</kbd>
+            <span>Pause</span>
+          </div>
+          <div class="control">
+            <kbd>q / Escape</kbd>
+            <span>Exit</span>
+          </div>
+          <div class="control">
+            <kbd>r</kbd>
+            <span>Replay from start</span>
+          </div>
+          <div class="control">
+            <kbd>→</kbd>
+            <span>Skip 5 seconds</span>
+          </div>
+          <div class="control">
+            <kbd>←</kbd>
+            <span>Go back 5 seconds</span>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="build" id="build">
+        <p class="title">04 / BUILD</p>
+        <p class="command">BUILD</p>
+        <pre><code>$ make clean build</code></pre>
+        <p class="command">INSTALL</p>
+        <pre><code>$ sudo make clean install</code></pre>
+        <p class="command">UNINSTALL</p>
+        <pre><code>$ sudo make uninstall</code></pre>
+      </div>
+      <hr />
+      <div class="req">
+        <p class="title">05 / REQUIREMENTS</p>
+        <div class="grid-container">
+          <div class="req-card">
+            <p>GCC</p>
+          </div>
+          <div class="req-card">
+            <p>ncurses</p>
+          </div>
+          <div class="req-card">
+            <p>miniaudio.h</p>
+            <span>EMBEDDED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
