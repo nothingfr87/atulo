@@ -191,3 +191,158 @@ body {
   display: block;
   font-size: 11px;
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .hero,
+  .formats,
+  .interface,
+  .controls,
+  .build,
+  .req {
+    margin: 40px 20px;
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .header .logo {
+    font-size: 20px;
+  }
+
+  .header .navbar .links {
+    gap: 8px;
+  }
+
+  .hero .title {
+    font-size: 38px;
+  }
+
+  .hero .subtitle {
+    font-size: 22px;
+    max-width: 250px;
+  }
+
+  .hero .desc {
+    max-width: 300px;
+  }
+
+  .formats .grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .interface .content {
+    max-width: 100%;
+  }
+
+  .interface .preview {
+    padding: 5px;
+  }
+
+  .controls .grid-container {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .controls .control > * {
+    padding: 14px 12px;
+  }
+
+  .build pre {
+    font-size: 14px;
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  .req .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 5px;
+  }
+
+  .hero,
+  .formats,
+  .interface,
+  .controls,
+  .build,
+  .req {
+    margin: 35px 10px;
+  }
+
+  .header {
+    padding: 10px;
+  }
+
+  .header .logo {
+    font-size: 18px;
+  }
+
+  .header .navbar .links {
+    gap: 5px;
+  }
+
+  .header .navbar .links a {
+    font-size: 12px;
+  }
+
+  .hero .title {
+    font-size: 32px;
+  }
+
+  .hero .subtitle {
+    font-size: 19px;
+  }
+
+  .hero .desc {
+    font-size: 14px;
+  }
+
+  p.title {
+    font-size: 12px;
+  }
+
+  .formats .card {
+    padding: 12px;
+  }
+
+  .interface .content {
+    font-size: 14px;
+  }
+
+  .controls .grid-container {
+    grid-template-columns: 100px 1fr;
+  }
+
+  .controls .control > * {
+    padding: 12px 10px;
+    font-size: 14px;
+  }
+
+  .controls .control kbd {
+    font-size: 11px;
+  }
+
+  .controls .control span {
+    font-size: 13px;
+  }
+
+  .build .command {
+    font-size: 15px;
+  }
+
+  .build pre {
+    font-size: 12px;
+    padding: 12px;
+  }
+
+  .req .req-card {
+    padding: 12px;
+  }
+}
