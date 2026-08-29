@@ -20,7 +20,7 @@ void init_ui() {
   keypad(stdscr, TRUE);
 
   init_pair(ACCENT_COLOR, COLOR_MAGENTA, -1);
-  init_pair(MUTED_COLOR, COLOR_BLACK, -1);
+  init_pair(MUTED_COLOR, 8, -1);
 }
 
 void draw_ui(const char *filename, ma_engine *engine, ma_sound *sound,
