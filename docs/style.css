@@ -14,47 +14,16 @@
   border-radius: 0;
 }
 
-.container {
-  padding: 0 15px;
-  margin: 15px auto;
-  max-width: 1200px;
-}
-
-p.title {
-  color: var(--muted-color);
-  font-size: 13px;
-  margin: 20px 0;
-}
-
-hr {
-  width: 50%;
-  margin: auto;
-  height: 1px;
-  border: none;
-  background-color: var(--border-color);
-}
-
-a {
-  color: var(--text-color);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--accent-color);
-  text-decoration: underline;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 body {
   font-family: "Iosevka Charon", sans-serif;
   background-color: var(--bg-main);
   min-height: 100vh;
+}
+
+.container {
+  padding: 0 15px;
+  margin: 15px auto;
+  max-width: 1200px;
 }
 
 .header {
@@ -79,13 +48,54 @@ body {
   gap: 14px;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--text-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+hr {
+  width: 50%;
+  margin: auto;
+  height: 1px;
+  border: none;
+  background-color: var(--border-color);
+}
+
+pre {
+  background-color: var(--bg-card) !important;
+  color: var(--text-color);
+  font-size: 16px;
+  padding: 20px;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+}
+
 .hero,
 .formats,
 .interface,
 .controls,
 .build,
-.req {
+.req,
+.configuration {
   margin: 60px;
+}
+
+p.title {
+  color: var(--muted-color);
+  font-size: 13px;
+  margin: 20px 0;
 }
 
 .hero .title {
@@ -110,7 +120,8 @@ body {
   margin: 20px 0;
 }
 
-.formats .grid-container {
+.formats .grid-container,
+.req .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 }
@@ -122,7 +133,8 @@ body {
   margin: -0.5px;
 }
 
-.interface .content {
+.interface .content,
+.configuration .content {
   color: var(--text-color);
   max-width: 650px;
   line-height: 1.7;
@@ -160,22 +172,26 @@ body {
   color: var(--muted-color);
 }
 
-.build .command {
+.build .command,
+.configuration .command {
   font-size: 18px;
   color: var(--muted-color);
   margin-top: 20px;
 }
 
-.build pre {
-  background-color: var(--bg-card) !important;
+
+
+.configuration pre code {
+  font-family: "Iosevka Charon", monospace;
   color: var(--text-color);
-  font-size: 16px;
-  padding: 20px;
 }
 
-.req .grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+.configuration strong {
+  color: var(--accent-color);
+}
+
+.configuration code {
+  color: var(--accent-color);
 }
 
 .req .req-card {
@@ -202,7 +218,8 @@ body {
   .interface,
   .controls,
   .build,
-  .req {
+  .req,
+  .configuration {
     margin: 40px 20px;
   }
 
@@ -231,11 +248,13 @@ body {
     max-width: 300px;
   }
 
-  .formats .grid-container {
+  .formats .grid-container,
+  .req .grid-container {
     grid-template-columns: 1fr;
   }
 
-  .interface .content {
+  .interface .content,
+  .configuration .content {
     max-width: 100%;
   }
 
@@ -251,14 +270,10 @@ body {
     padding: 14px 12px;
   }
 
-  .build pre {
+  .build pre,
+  .configuration pre {
     font-size: 14px;
     padding: 15px;
-    overflow-x: auto;
-  }
-
-  .req .grid-container {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -272,7 +287,8 @@ body {
   .interface,
   .controls,
   .build,
-  .req {
+  .req,
+  .configuration {
     margin: 35px 10px;
   }
 
@@ -312,7 +328,8 @@ body {
     padding: 12px;
   }
 
-  .interface .content {
+  .interface .content,
+  .configuration .content {
     font-size: 14px;
   }
 
@@ -333,11 +350,13 @@ body {
     font-size: 13px;
   }
 
-  .build .command {
+  .build .command,
+  .configuration .command {
     font-size: 15px;
   }
 
-  .build pre {
+  .build pre,
+  .configuration pre {
     font-size: 12px;
     padding: 12px;
   }

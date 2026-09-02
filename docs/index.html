@@ -37,24 +37,12 @@
       <div class="formats">
         <p class="title">01 / FORMATS</p>
         <div class="grid-container">
-          <div class="card">
-            <p>MP3</p>
-          </div>
-          <div class="card">
-            <p>WAV</p>
-          </div>
-          <div class="card">
-            <p>OGG</p>
-          </div>
-          <div class="card">
-            <p>OPUS</p>
-          </div>
-          <div class="card">
-            <p>FLAC</p>
-          </div>
-          <div class="card">
-            <p>AIFF</p>
-          </div>
+          <div class="card"><p>MP3</p></div>
+          <div class="card"><p>WAV</p></div>
+          <div class="card"><p>OGG</p></div>
+          <div class="card"><p>OPUS</p></div>
+          <div class="card"><p>FLAC</p></div>
+          <div class="card"><p>AIFF</p></div>
         </div>
       </div>
       <hr />
@@ -65,7 +53,11 @@
           ncurses and its audio support comes from the embedded miniaudio.h
           library.
         </p>
-        <img src="images/interface.png" alt="Preview" class="preview" />
+        <img
+          src="images/interface.png"
+          alt="Atulo terminal interface preview"
+          class="preview"
+        />
       </div>
       <hr />
       <div class="controls">
@@ -104,21 +96,60 @@
         <pre><code>$ sudo make uninstall</code></pre>
       </div>
       <hr />
+      <div class="configuration">
+        <p class="title">05 / CONFIGURATION</p>
+        <p class="content">
+          Atulo can be configured through <code>config.h</code>. After making
+          changes, rebuild the source code for them to take effect.
+        </p>
+        <pre><code>#ifndef CONFIG_H
+#define CONFIG_H
+
+#include &lt;ncurses.h&gt;
+
+#define KEY_QUIT 'q'
+#define KEY_REPLAY 'r'
+#define KEY_PAUSE 'p'
+#define SEC_KEY_PAUSE ' '
+
+#define SK_FR_KEY KEY_RIGHT
+#define SK_BR_KEY KEY_LEFT
+
+#define BOX_W 80
+#define BOX_H 10
+
+#define ACCENT_COLOR_CODE 5
+#define MUTED_COLOR_CODE 8
+
+#endif</code></pre>
+        <p class="command">BOX SIZE</p>
+        <p class="content">
+          Change <code>BOX_W</code> and <code>BOX_H</code> to adjust the width
+          and height of the interface box.
+        </p>
+        <p class="command">KEYBINDINGS</p>
+        <p class="content">
+          Keybindings can be customized. Non-letter keys
+          <strong>MUST</strong> use their corresponding ncurses key codes.
+        </p>
+        <p class="command">COLORS</p>
+        <p class="content">
+          Colors can be customized using valid ncurses color codes.
+        </p>
+      </div>
+      <hr />
       <div class="req">
-        <p class="title">05 / REQUIREMENTS</p>
+        <p class="title">06 / REQUIREMENTS</p>
         <div class="grid-container">
-          <div class="req-card">
-            <p>GCC</p>
-          </div>
-          <div class="req-card">
-            <p>ncurses</p>
-          </div>
+          <div class="req-card"><p>GCC</p></div>
+          <div class="req-card"><p>ncurses</p></div>
           <div class="req-card">
             <p>miniaudio.h</p>
             <span>EMBEDDED</span>
           </div>
         </div>
       </div>
+      <hr />
     </div>
   </body>
 </html>
