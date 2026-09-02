@@ -70,7 +70,7 @@ void init_atulo(int argc, char *argv[]) {
 void quit_atulo() {
   ma_sound_stop(&sound);
   clear();
-  printw("Quiting.\n");
+  printw("Stopped.\n");
   refresh();
 }
 

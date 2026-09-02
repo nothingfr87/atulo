@@ -5,7 +5,7 @@ Atulo is a C program made to play audio files
 ---
 
 > [!NOTE]
-> Atulo now supports mp3, wav, ogg, opus, and flac any other format atulo wouldn't be able to play them, currently I am working on creating a decoder using ffmpeg, until then you can use atulo freely 
+> Atulo now supports mp3, wav, ogg, opus, aiff and flac any other format atulo wouldn't be able to play them, currently I am working on creating a decoder using ffmpeg, until then you can use atulo freely 
 
 ---
 
@@ -76,15 +76,52 @@ sudo make uninstall
 
 - Works from terminal directly
 - lightweight
-- Supports all formats
-- Keybindings:
-    - p/Space: Pause
-    - q/Escape: Exit
-    - r: replay from start
-    - Right Arrow: Skip 5 seconds
-    - Left Arrow: Go back 5 seconds
+- Keyboard Focused 
 
-More Coming...
+---
+
+## Usage:
+
+| Key | Function |
+| --- | -------- |
+| <kbd>p</kbd> <kbd>Space</kbd> | Pause |
+| <kbd>q</kbd> | Quit |
+| <kbd>r</kbd> | Replay |
+| <kbd>-></kbd> | Seek 5s |
+| <kbd><-</kbd> | Seek 5s Backward |
+
+---
+
+## Configuration:
+
+Atulo can be configured through `config.h` then rebuilding the source code
+
+```h
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// Keys
+#define KEY_QUIT 'q'
+#define KEY_REPLAY 'r'
+#define KEY_PAUSE 'p'
+#define SEC_KEY_PAUSE ' ' // Space
+#define SK_FR_KEY 0405 // Right Arrow
+#define SK_BR_KEY 0404 // Left Arrow
+
+// Box Width & Height
+#define BOX_W 80
+#define BOX_H 10
+
+// Colors (MUST FOLLOW NCURSES COLOR CODES)
+#define ACCENT_COLOR_CODE 5
+#define MUTED_COLOR_CODE 8
+
+#endif
+```
+
+You can change the width and height of the box that contains the elements
+
+You can change the Keybindings (NON-LETTER KEYS MUST USE THE CORRESPONDING NCURSES KEY CODES)
 
 ---
 
